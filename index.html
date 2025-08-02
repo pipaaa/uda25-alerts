@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Demo OneSignal Notificaciones - UDA25</title>
+  <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      min-height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      margin-bottom: 1rem;
+      font-weight: 800;
+    }
+    button {
+      background: #f5af19;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      color: #000;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background: #ff7300;
+      color: white;
+    }
+    input, textarea {
+      padding: 0.7rem;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: none;
+      margin-top: 1rem;
+      width: 300px;
+      max-width: 90vw;
+    }
+    label {
+      margin-top: 1.5rem;
+      font-weight: 600;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>UDA25 - Demo Notificaciones OneSignal</h1>
+  <p>Suscríbete para recibir notificaciones.</p>
+  <button id="subscribeBtn">Suscribirme</button>
+
+  <form id="sendNotificationForm" style="margin-top: 2rem; max-width: 400px;">
+    <label for="title">Título de la notificación:</label>
+    <input type="text" id="title" placeholder="Ej: La cena está lista" required />
+
+    <label for="message">Mensaje:</label>
+    <textarea id="message" rows="3" placeholder="Ej: Por favor, acérquense a la cocina" required></textarea>
+
+    <button type="submit">Enviar notificación</button>
+  </form>
+
+  <script>
+    const OneSignal = window.OneSignal || [];
+    OneSignal.push(function() {
+      OneSignal.init({
+        appId: "81b3954b-c424-4ef6-ae89-f69f05109ecb",
+        notifyButton: {
+          enable: true,
+        },
+        allowLocalhostAsSecureOrigin: true,
+      });
+    });
+
+    const subscribeBtn = document.getElementById('subscribeBtn');
+    subscribeBtn.onclick = async () => {
+      const isPushSupported = await OneSignal.isPushNotificationsSupported();
+      if (!isPushSupported) {
+        alert('Tu navegador no soporta notificaciones push');
+        return;
+      }
+      OneSignal.push(function() {
+        OneSignal.registerForPushNotifications().then(() => {
+          alert('¡Suscripción exitosa! Ya recibirás notificaciones.');
+        }).catch(() => {
+          alert('No se pudo suscribir a notificaciones.');
+        });
+      });
+    };
+
+    document.getElementById('sendNotificationForm').onsubmit = e => {
+      e.preventDefault();
+      alert('Para enviar notificaciones, se necesita configurar un backend o usar la API de OneSignal desde servidor.');
+    };
+  </script>
+</body>
+</html>
